@@ -35,10 +35,11 @@ void trace_write(uint8_t data[], uint8_t size) {
     uint8_t index = 0;
     if (trace_head == trace_tail) {
         SPDR = data[index];
-        if ((SPSR | (1 << WCOL)) == 0) {
+        SPCR |= (1 << SPIE);
+        // if ((SPSR | (1 << WCOL)) == 0) {
             index += 1;
-            SPCR |= (1 << SPIE);
-        }
+        //     SPCR |= (1 << SPIE);
+        // }
     }
     while (index < size) {
         trace_data[trace_head] = data[index];
