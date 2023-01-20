@@ -1,2 +1,2 @@
 # AceTrace
-A lightweight software tracing library
+Lightweight software tracing tools
