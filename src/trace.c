@@ -14,11 +14,12 @@ static volatile uint8_t trace_read_tail = 0;
 
 ISR(SPI_STC_vect) {
     if (trace_head != trace_tail) {
-        SPDR = trace_data[trace_tail];
         trace_data[trace_tail] = SPDR;
+        SPDR = trace_data[trace_tail];
         trace_tail += 1;
         trace_tail &= TRACE_BUFFER_MASK;
     } else {
+        trace_data[trace_tail] = SPDR;
         SPCR &= ~(1 << SPIE);
     }
 }
@@ -32,11 +33,6 @@ void trace_init(void) {
 void trace_write(uint8_t data[], uint8_t size) {
     cli();
     uint8_t index = 0;
-    if ((SPCR | (1 << SPIE)) == 0) {
-        SPCR |= (1 << SPIE);
-        SPDR = data[index];
-        index += 1;
-    }
     while (index < size) {
         trace_data[trace_head] = data[index];
         trace_head += 1;
@@ -44,6 +40,8 @@ void trace_write(uint8_t data[], uint8_t size) {
         data[index] = trace_data[trace_head];
         index += 1;
     }
+    SPDR = 0x00;
+    SPCR |= (1 << SPIE);
     sei();
 }
 
