@@ -1,6 +1,8 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
+#include <stdbool.h>
+
 #include "trace.h"
 
 #define TRACE_BUFFER_BITS (6)
