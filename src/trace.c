@@ -32,7 +32,7 @@ void trace_init(void) {
 void trace_write(uint8_t data[], uint8_t size) {
     cli();
     uint8_t index = 0;
-    if ((SPCR | (1 << SPIE) == 0)) {
+    if ((SPCR | (1 << SPIE)) == 0) {
         SPCR |= (1 << SPIE);
         SPDR = data[index];
         index += 1;
