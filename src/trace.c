@@ -33,6 +33,13 @@ void trace_init(void) {
 void trace_write(uint8_t data[], uint8_t size) {
     cli();
     uint8_t index = 0;
+    if (trace_head == trace_tail) {
+        SPDR = data[index];
+        if ((SPSR | (1 << WCOL)) == 0) {
+            index += 1;
+            SPCR |= (1 << SPIE);
+        }
+    }
     while (index < size) {
         trace_data[trace_head] = data[index];
         trace_head += 1;
@@ -40,8 +47,8 @@ void trace_write(uint8_t data[], uint8_t size) {
         data[index] = trace_data[trace_head];
         index += 1;
     }
-    SPDR = 0x00;
-    SPCR |= (1 << SPIE);
+    // SPDR = 0x00;
+    
     sei();
 }
 
