@@ -14,8 +14,8 @@ static volatile uint8_t trace_read_tail = 0;
 
 ISR(SPI_STC_vect) {
     if (trace_head != trace_tail) {
-        trace_data[trace_tail] = SPDR;
         SPDR = trace_data[trace_tail];
+        trace_data[trace_tail] = SPDR;
         trace_tail += 1;
         trace_tail &= TRACE_BUFFER_MASK;
     } else {
