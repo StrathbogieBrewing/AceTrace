@@ -13,7 +13,6 @@ static volatile uint8_t trace_data[TRACE_BUFFER_SIZE] __attribute__((aligned(TRA
 static volatile uint8_t trace_head = 0;
 static volatile uint8_t trace_tail = 0;
 static volatile uint8_t trace_read_tail = 0;
-static volatile bool trace_spi_busy = false;
 
 ISR(SPI_STC_vect) {
     uint8_t rx_data = SPDR;
@@ -24,26 +23,25 @@ ISR(SPI_STC_vect) {
         trace_tail &= TRACE_BUFFER_MASK;
     } else {
         trace_data[trace_tail] = rx_data;
-        trace_spi_busy = false;
-        SPCR &= ~(1 << SPIE);
+        SPCR = 0;
+        PORTB |= (1 << PORTB2);
     }
 }
 
 void trace_init(void) {
     DDRB |= (1 << PORTB2) | (1 << PORTB3) | (1 << PORTB5);
-    PORTB |= (1 << PORTB3);
-    SPCR = (1 << MSTR) | (1 << SPE) | (1 << SPR0) | (1 << SPR1) | (1 << CPHA) | (0 << CPOL);
+    PORTB |= (1 << PORTB3) | (1 << PORTB2) | (1 << PORTB5);
 }
 
 void trace_write(uint8_t data[], uint8_t size) {
     cli();
     uint8_t index = 0;
     if (size) {
-        if (!trace_spi_busy) {
+        if ((PORTB & (1 << PORTB2)) != 0) {
+            PORTB &= ~(1 << PORTB2);
+            SPCR = (1 << MSTR) | (1 << SPE) | (1 << SPR0) | (1 << SPR1) | (1 << CPHA) | (1 << CPOL) | (1 << SPIE);
             SPDR = data[index];
             index += 1;
-            trace_spi_busy = true;
-            SPCR |= (1 << SPIE);
         }
         while (index < size) {
             trace_data[trace_head] = data[index];

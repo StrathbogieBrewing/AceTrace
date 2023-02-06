@@ -9,7 +9,7 @@ int main(void) {
     while (1) {
         _delay_ms(10);
         counter++;
-        trace_write((uint8_t[]){0x0F, counter, 0xF0}, 3);
+        trace_write((uint8_t[]){-counter, counter, -counter}, 3);
     }
     return 0;
 }
