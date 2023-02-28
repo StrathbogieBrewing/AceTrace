@@ -1,15 +1,16 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "trace.h"
+#include "spi_master.h"
 
 int main(void) {
-    trace_init();
+    spi_master_init();
     uint8_t counter = 0;
     while (1) {
         _delay_ms(10);
         counter++;
-        trace_write((uint8_t[]){-counter, counter, -counter}, 3);
+        spi_master_buffer_t message = {{55, counter, counter + 2}, 3};
+        spi_master_write(&message);
     }
     return 0;
 }

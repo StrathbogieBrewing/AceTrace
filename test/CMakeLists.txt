@@ -22,7 +22,7 @@ project(acetrace C ASM)
 include(avr-gcc.cmake)
 
 include_directories(../include)
-add_executable(${elf_file} ../src/trace.c main.c )
+add_executable(${elf_file} ../src/spi_master.c main.c )
 
 
 
