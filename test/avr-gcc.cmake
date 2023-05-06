@@ -86,6 +86,7 @@ add_custom_target(
        -U flash:w:${hex_file}
        -P ${AVR_UPLOADTOOL_PORT}
        -B ${AVR_UPLOADTOOL_BIT_RATE}
+       -b ${AVR_UPLOAD_BAUD_RATE}
     DEPENDS ${hex_file}
     COMMENT "Uploading ${hex_file} to ${AVR_MCU_TYPE} using ${AVR_PROGRAMMER}"
  )

@@ -1,2 +1,8 @@
 **/build
 .vscode
+*.o
+*.d
+*.map
+*.elf
+*.lss
+*.map
